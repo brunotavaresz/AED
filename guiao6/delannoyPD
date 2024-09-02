@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <assert.h>
+
+
+
+//PD recursiva
+long nadd = 0;
+long ncall = 0;
+
+//recursive
+int dellanoyR(int m, int n) {
+    ncall++;
+    int r;
+    if(m==0 || n== 0) {
+        r = 1;
+    } else {
+        r = dellanoyR(m-1, n) + dellanoyR(m-1, n-1) + dellanoyR(m, n-1);
+    }
+
+    return r;
+}
+
+//memorized
+
+int dellanoyM(int m, int n) {
+    ncall++;
+    static int mem[1+LIMIT][1+LIMIT] = {{1}}; //everitying else is 0
+    if (mem[m][n] == 0) {
+        mem[m][n] = dellanoyM(m-1, n) + dellanoyM(m-1, n-1) + dellanoyM(m, n-1);
+    }
+    return mem[m][n];
+}
+
+//PD bottom-up
+
+
+
+
+
+
+int delannoyPD(int m, int n) {
+    ncall++;
+    int mem[1+m][1+n];
+
+    for (int i=0 ; i<=m ; i++) {
+        for (int j=0 ; j<=n ; j++) {
+            if (i == 0 || j == 0) {
+                mem[i][j] = 1;
+            } else {
+                assert(mem[i-1][j] > 0);
+                assert(mem[i-1][j-1] > 0);
+                assert(mem[i][j-1] > 0);
+                nadd += 2;
+                mem[i][j] = mem[i-1][j] + mem[i-1][j-1] + mem[i][j-1];
+            }
+        }
+    }
+    return mem[m][n];
+}
+
+static inline int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+static inline int min(int a, int b) {
+    return a < b ? a : b;
+}
+
+//PD memorizada
+
+//cache para delannoyPDM
+static int cachePDM[1+LIMIT][1+LIMIT] = {{1}}; //everitying else is 0
+static int m_cache = 0; 
+
